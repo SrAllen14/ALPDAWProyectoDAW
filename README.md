@@ -72,6 +72,8 @@ ip a
 ip r                      #Comprobar IP y GW como se ve en las capturas de abajo
 
 sudo resolvectl status    #Comprobar el DNS (educa.jcyl.es)
+
+# Falta codigo
 ```
 
 
