@@ -367,6 +367,7 @@ si debemos especificar el usuario al que queremos conectarnos en el apartado "Us
 ### 1.2.5 **Visual Studio Code**
 
 # 2. GitHub
+Como te odio galan
 # 3.Entorno de Explotación
 
 ---
