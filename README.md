@@ -364,6 +364,7 @@ si debemos especificar el usuario al que queremos conectarnos en el apartado "Us
 
 > Comprobamos que nos encontramos en el directorio raiz /var/www/html y que podemos crear carpetas y archivos, modificarlos y eliminarlos.
 ### 1.2.4 **Netbeans**
+Esto es una prueba básica.
 ### 1.2.5 **Visual Studio Code**
 
 # 2. GitHub
