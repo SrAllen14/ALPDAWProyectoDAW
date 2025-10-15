@@ -368,7 +368,7 @@ Esto es una prueba básica.
 ### 1.2.5 **Visual Studio Code**
 
 # 2. GitHub
-
+Como te odio galan
 # 3.Entorno de Explotación
 
 ---
