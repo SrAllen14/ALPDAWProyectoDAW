@@ -211,6 +211,16 @@ drwxr-xr-x 3 root        root      4096 oct  9 10:30 ..
 -rwxrwxr-x 1 operadorweb www-data 10671 oct  9 10:30 index.html
 
 ```
+
+##### Protocolo HTTPS
+####### Instalación
+Generar clave privada SSH
+```bash
+openssl genrsa 2048 > nombrefile.key
+
+# Generamos la solicitud de certificado.
+openssl 
+```
 ### 1.1.3 PHP
 #### Instalación de PHP en el servidor apache
 Una vez actualizado el sistema y mejorado los paquetes (update y upgrade) debemos de realizar los siguientes pasos:
