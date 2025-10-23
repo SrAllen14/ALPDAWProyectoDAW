@@ -7,7 +7,7 @@
     - [1.1 Ubuntu Server 24.04.3 LTS](#11-ubuntu-server-24043-lts)
       - [1.1.1 **Configuración inicial**](#111-configuración-inicial)
         - [Nombre y configuración de red](#nombre-y-configuración-de-red)
-      - [**Actualizar el sistema**](#actualizar-el-sistema)
+        - [**Actualizar el sistema**](#actualizar-el-sistema)
         - [**Configuración fecha y hora**](#configuración-fecha-y-hora)
         - [**Cuentas administradoras**](#cuentas-administradoras)
         - [**Habilitar cortafuegos**](#habilitar-cortafuegos)
@@ -16,14 +16,15 @@
         - [Verficación del servicio](#verficación-del-servicio)
         - [Virtual Hosts](#virtual-hosts)
         - [Permisos y usuarios](#permisos-y-usuarios)
+        - [Conexión segura (HTTPS)](#protocolo-https)
       - [1.1.3 PHP](#113-php)
-          - [Instalación de PHP en el servidor apache](#instalación-de-php-en-el-servidor-apache)
-      - [1.1.4 MySQL](#114-mysql)
-      - [1.1.5 XDebug](#115-xdebug)
-      - [1.1.6 DNS](#116-dns)
-      - [1.1.7 SFTP](#117-sftp)
-      - [1.1.8 Apache Tomcat](#118-apache-tomcat)
-      - [1.1.9 LDAP](#119-ldap)
+        - [Instalación de PHP en el servidor apache](#instalación-de-php-en-el-servidor-apache)
+        - [1.1.4 MySQL](#114-mysql)
+        - [1.1.5 XDebug](#115-xdebug)
+        - [1.1.6 DNS](#116-dns)
+        - [1.1.7 SFTP](#117-sftp)
+        - [1.1.8 Apache Tomcat](#118-apache-tomcat)
+        - [1.1.9 LDAP](#119-ldap)
     - [1.2 Windows 11](#12-windows-11)
       - [1.2.1 **Configuración inicial**](#121-configuración-inicial)
         - [**Nombre y configuración de red**](#nombre-y-configuración-de-red-1)
@@ -213,14 +214,55 @@ drwxr-xr-x 3 root        root      4096 oct  9 10:30 ..
 ```
 
 ##### Protocolo HTTPS
-####### Instalación
-Generar clave privada SSH
+###### Instalación
+Generar clave privada SSL
 ```bash
-openssl genrsa 2048 > nombrefile.key
-
 # Generamos la solicitud de certificado.
-openssl 
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/alp-used.key -out /etc/ssl/certs/alp-used.crt
+
+# A continuación vamos a introducir los datos del certificado:
+Country Name: ES
+State or Province Name: Zamora
+Locality Name: Benavente
+Organization Name: Instituto
+Organizational Unit Name: Informatica
+Common Name: alp-used
+Email Address: alvaro.allper.1@educa.jcyl.es
+
+# Para comprobar que se ha creado correctamente.
+sudo ls /etc/ssl/certs | grep alp-used
+sudo ls /etc/ssl/private | grep alp-used
+
+# Reiniciamos el servicio apache
+sudo systemctl restart apache2
+
+# Nos situamos en el directorio /etc/apache2/sites-available y hacemos una copia del archivo default-ssl.conf
+cd /etc/apache2/sites-available
+sudo cp default-ssl.conf alp-used.conf
+
+# Modificamos el archivo copiado alp-used.conf con las siguientes líneas:
+
+SSLCertificateFile      /etc/ssl/certs/alp-used.crt
+SSLCertificateKeyFile   /etc/ssl/private/alp-used.key
+
+# Activamos el archivo de configuración modificado y reinicamos el servicio apache.
+sudo a2ensite alp-used.conf
+sudo systemctl restart apache2
+
+# También debemos activar el puerto 443 en el firewall y borrar el v6.
+sudo ufw allow 443
+sudo ufw status numbered # Comprobar el número del puerto 443(v6)
+sudo ufw delete (nº)
 ```
+
+**Consejo**
+Al entrar con un navegador al servidor, nos indica que no es seguro debido a que la autoridad certificadora no es segura.
+El certificado es autofirmado por el usuario, en este caso yo, y no es de confianza para el navegador. Esto se puede se puede resolver
+de dos formas.
+> 1. Pedir a una autoridad certificadora que firme el certificado para que así sea reconocido por el navegador y sea seguro.
+
+> 2. Introducir como autoridad certificadora a tu propio usuario en tu dispositivo. No supone un riesgo ya que te estás dando confianza
+> a ti mismo. 
 ### 1.1.3 PHP
 #### Instalación de PHP en el servidor apache
 Una vez actualizado el sistema y mejorado los paquetes (update y upgrade) debemos de realizar los siguientes pasos:
