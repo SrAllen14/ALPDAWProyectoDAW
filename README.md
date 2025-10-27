@@ -270,43 +270,8 @@ Una vez actualizado el sistema y mejorado los paquetes (update y upgrade) debemo
 # Comprobamos que apache está instalado y activo.
 sudo systectl status apache2
 
-# Después añadimos el repositorio PPA de Ondrej para PHP:
-sudo apt install software-properties-common
-# Puede que ya venga instalado...
-
-#Añadimos el repositorio de ondrej/php y comprobamos si ha sido instalado.
-sudo add-apt-repository ppa:ondrej/php -y
-ls /etc/apt/sources.list.d/ | grep ondrej
-#Actualizamos todos los repositorios.
-sudo apt update
-```
-
-Ahora instalamos la versión PHP-FPM y los módulos de Apache. En este caso la versión instalada será la PHP 8.3. A mayores, instalaremos otras extensiónes útiles. 
-
-```bash
-# En el mismo comando va la instalación de PHP y de las extensiones.
-sudo apt install php8.3 libapache2-mod-php8.3 php8.4-fpm -y
-```
----
-
-> **Importante**
-> Ahora se va a habilitar ciertos módulos de PHP y puede saltar un error.
-> En caso de que salte error realizar los siguientes pasos previos.
-
-```bash
-# Primero deshabilitamos el mpm_prefork y no saldrá un posible error.
-sudo a2dismod mpm_prefork
-```
-
-```bash
-# Para resolver el error anterior desactivamos el módulo mod_php.
-sudo a2dismod php8.3
-# Este comando elimina la dependencia con mpm_prefork y ahora si podremos desahabilitarlo.
-```
-
-```bash
-# Por último, una vez deshabilitado mpm_prefork, activaremos mpm_event y proxy_fcgi
-sudo a2enmod mpm_event proxy_fcgi
+# A continuación instalamos PHP y PHP8.3-FPM con la versión 8.3
+sudo apt install php8.3-fpm php8.3
 ```
 
 Para terminar reiniciaremos Apache y comprobaremos que todo ha salido bien:
@@ -324,6 +289,24 @@ phpinfo();
 Entramos en nuestra página principal y escribimos en la barra de busqueda:
 http://direccionip/info.php. Nos debería de salir una página como esta.
 
+**Directorios y ficheros de PHP**
+
+**/etc/php/8.3/fpm/conf.d**: Módulos instalados en esta configuración de php (enlaces simbólicos a /etc/php/8.3/mods-available)
+**/etc/php/8.3/fpm/php-fpm.conf** : Configuración general de php-fpm
+**/etc/php/8.3/fpm/php.ini** : Configuraicón de php para este escenario
+**/etc/php/8.3/fpm/pool.d** : Directorio con distintos pool de configuración. Cada aplicación puede tener una configuración distinta (procesos distintos) de php-fpm.
+  
+Por defecto tenemos un pool cuya configuración la encontramos en **/etc/php/8.3/fpm/pool.d/ www.conf**, en este fichero podemos configurar parámetros, los más importantes son:
+
+**[www]**: -es el nombre del pool, si tenemos varios, cada uno tiene que tener un nombre.
+**user y group** : Usuario y grupo con el que va a ejecutar los procesos
+**listen**: Se indica el socket unix o el socket TCP donde se van a escuchar los procesos:
+Por defecto, escucha por un socket unix: listen=/run/php/php8.3-fpm.sock
+Si queremos que escuche por TCO; listen=127.0.0.1:9000
+Directivas de procesamiento, gestión de procesos:
+**pm**: Por defecto es igual a dynamic (el número de procesos se crean y se destruyen de forma dinámica). Otros valores: static o ondemand.
+Otras directivas: **pm.max_children** (número máxio de procesos hijo que pueden ser creados al mismo tiempo para manejar solicitudes), **pm.start_servers** (cuantos procesos PHP-FPM se lanzararón al inicio de forma automática),**pm.min_spare_servers**( número mínimo de procesos del servidor inactivos para manejar nuevas solicitudes),...
+**pm.status_path=/status**: No es necesario, vamos a activar la URL de status para comprobar el estado del proceso.
 
 #### Configuración del intérprete PHP.
 La configuración que vamos a aplicar en nuestro servicio de PHP es el siguiente:
@@ -332,7 +315,7 @@ La configuración que vamos a aplicar en nuestro servicio de PHP es el siguiente
 > memory_limit: 256M
 
 El display_errors sirve para mostrar los errores de ejecución en la salida (navegador
-o consola) y el display_startup_erros para controlar los errores que surgen durante la
+o consola) y el display_startup_errors para controlar los errores que surgen durante la
 ejecución PHP.
 
 El límite de memoria o memory_limit en el archivo de configuración sirve para establecer
@@ -358,7 +341,7 @@ sudo systemctl restart php8.3-fpm
 ```
 
 Para comprobar que dicha configuración se ha aplicado vamos a la página info.php y comprobamos
-que dichos valores han cambiado y son los introducidos en el archivo de configuración.ç
+que dichos valores han cambiado y son los introducidos en el archivo de configuración.
 
 > **Consejo:**
 >
@@ -367,6 +350,45 @@ se encuentra el archivo que acabamos de modificar.
 
 ### 1.1.4 MySQL
 ### 1.1.5 XDebug
+##### ⚙️ Instalación y configuración
+
+##### Verifica si Xdebug está instalado
+
+```bash
+sudo php -v | grep xdebug
+```
+
+##### Si no aparece, instalálo:
+```bash
+sudo apt install php8.3-xdebug
+```
+
+Luego se edita el fichero de configuración:
+
+```bash
+sudo nano /etc/php/8.3/fpm/conf.d/20-xdebug.ini
+```
+
+Y añade
+
+```bash
+xdebug.mode=develop,debug
+xdebug.start_with_request=yes
+xdebug.client_host=127.0.0.1
+xdebug.client_port=9003
+xdebug.log=/tmp/xdebug.log
+xdebug.log_level=7
+xdebug.idekey="netbeans-xdebug"
+xdebug.discover_client_host=1
+```
+
+Guarda y reinicia el servidor
+
+```bash
+sudo systemctl restart apache2
+# o si usas php-fpm
+sudo systemctl restart php8.3-fpm
+```
 ### 1.1.6 DNS
 ### 1.1.7 SFTP
 ### 1.1.8 Apache Tomcat
@@ -416,8 +438,52 @@ si debemos especificar el usuario al que queremos conectarnos en el apartado "Us
 
 > Comprobamos que nos encontramos en el directorio raiz /var/www/html y que podemos crear carpetas y archivos, modificarlos y eliminarlos.
 ### 1.2.4 **Netbeans**
-Esto es una prueba básica.
-### 1.2.5 **Visual Studio Code**
+Como nuestro IDE escogido para el desarrollo de aplicaciones web durante el segundo curso de DAW es NetBeans
+vamos a introducir este programa.
+De uso completamente gratuito y con una interfaz compleja pero bastante completa tenemos delante un IDE estupendo pero complicado 
+en un principio.
+
+#### Creación de proyecto
+En este apartado vamos a detallar como se crea un proyecto de PHP enlazado mediante SFTP a un servidor de Ubuntu. La configuración
+de dicho servidor está explicada en este mismo documento.
+Para crear debemos de pulsar el botón con un cuadrado amarillo y un + verde.
+
+Esto nos abrirá una pestaña como la de abajo donde podemos escoger el tipo de proyecto entre un catálogo extenso:
+
+Escogemos el proyecto PHP y se nos abre la ventana de configuración de conexión donde pondremos la url completa de nuestro proyecto y 
+donde se guardará. Antes de continuar deberemos de darle a Manage y establecer la conexión
+
+**Pestaña de conexión**
+En esta pestaña indicaremos la ip de nuestro servidor Ubuntu, el usuario con el que iniciaremos la conexión y su contraseña que en este caso
+es el usuario operadorweb e indicaremos la ruta donde se encuentra el proyecto en cuestion teniendo en cuenta que los proyectos se alojan en
+/var/www/html...
+Para terminar pulsaremos el botón de Test Connection para probar si la conexión se realiza correctamente y cerraremos la pestaña.
+
+Al terminar de configurar la conexión y en caso de haber salido bien, nos saldrá un cuadro donde nos muestra la carpeta del proyecto previamente
+creada en el servidor y dentro un archivo cualquiera también creado con anterioridad. Esto es muy importante ya que, en caso de no existir la carpeta
+o de estar vacía, la conexión nos lleva a errores como creación de archivos basura o creación de directorios donde no deberían de crearse.
+
+**Pestaña de sincronización**
+Al finalizar podremos gestionar nuestra conexión pulsando click derecho en la carpeta sources y dandole a syncronize. Importante tener cuidado ya que 
+la pestaña de sincronización nos permite borrar, descargar y subir archivos y NetBeans establece bajo su criterio que elementos borrar, cuales subir y cuales 
+descargar y suele confundirse. Tener máximo cuidado y, en caso de duda, poner a todos los archivos la opción suspense la cual ignora el archivo.
+
+#### Versionamiento de un proyecto
+Una vez creado el proyecto, lo siguiente es versionar y hacer el primer commit. Para ello haremos click derecho encima del proyecto y pulsaremos 
+Versioning>Initialize Repository. Automaticamente se nos pondrán en verde todos los archivos y tendremos que hacer un commit.
+
+Por defecto la rama creada es la master y con ella haremos el commit pulsando botón derecho sobre el proyecto Git>Commit y nos saldrá la siguiente ventana:
+
+El mensaje recomendado para el primer commit es: Commit inicial o Initial commit. 
+
+Con esto podemos dar por terminado este apartado pero podemos añadir ramas cuyo uso facilita y simplifica el desarrollo.
+Tener una rama developer donde desarrolles y pruebes cosas nuevas y otra master donde subas el producto terminado hace más limpio
+el desarrollo de tu aplicación.
+Para crear una rama debemos hacer click derecho en el proyecto Git>Branch/Tag>Create Branch. Se nos abrirá una ventana
+en la cual escribiremos el nombre que queremos para la rama y aceptaremos.
+Una vez creada debemos de introducir en ella el contenido de master, es decir, hacer un "Merge"
+Git>Merge Revision y en la pestaña que se nos abre debemos de seleccionar la rama master y aceptar. Ahora ya tenemos ambas ramas en el mismo punto.
+
 
 # 2. GitHub
 
