@@ -34,6 +34,8 @@
       - [1.2.4 **Netbeans**](#124-netbeans)
       - [1.2.5 **Visual Studio Code**](#125-visual-studio-code)
   - [2. GitHub](#2-github)
+    - [2.1 Publicación de un repositorio local](#publicación-de-un-repositorio-local)
+    - [2.2 Clonar un repositorio](#clonar-un-repositorio)
   - [3.Entorno de Explotación](#3entorno-de-explotación)
 
 |  DAW/DWES Tema2 |
@@ -517,22 +519,35 @@ iniciamos la aplicación.
 Para conectar un dispositivo por SSH debemos realizar los siguientes pasos:
 > Pulsamos el botón Session con una pantalla como símbolo.
 
+|![Alt](webroot/images/mobasession.PNG)|
+
 > Seleccionamos SSH como protocolo de conexión.
+
+|![Alt](webroot/images/mobassh.PNG)|
 
 > Introducimos en el apartado Remote host la IP del ordenador al que queremos conectarnos. También 
 se puede especificar al usuario al que queremos conectarnos en el apartado Specify username, pero no 
 es obligatorio.
 
+|![Alt](webroot/images/mobassh.PNG)|
+
 > Se nos abrirá un terminal donde iniciaremos sesión con un usuario y una contraseña valida.
 
-
+|![Alt](webroot/images/mobasshdisplay.PNG)|
 Para conectar un dispositovo por SFTP para la transferencia de datos debemos realizar los siguientes pasos:
+
 > Pulsamos el botón Session con una pantalla como símbolo.
+
+|![Alt](webroot/images/mobasession.PNG)|
 
 > Seleccionamos SFTP como protocolo de conexión
 
+|![Alt](webroot/images/mobasftp.PNG)|
+
 > Introducimos la IP del ordenador al que queremos conectarnos en el apartado "Remote hosts" y, esta vez,
 si debemos especificar el usuario al que queremos conectarnos en el apartado "Username". Para nosotros es "operadorweb".
+
+|![Alt](webroot/images/mobasftpdisplay.PNG)|
 
 > Comprobamos que nos encontramos en el directorio raiz /var/www/html y que podemos crear carpetas y archivos, modificarlos y eliminarlos.
 ### 1.2.4 **Netbeans**
@@ -546,42 +561,67 @@ En este apartado vamos a detallar como se crea un proyecto de PHP enlazado media
 de dicho servidor está explicada en este mismo documento.
 Para crear debemos de pulsar el botón con un cuadrado amarillo y un + verde.
 
+|![Alt](webroot/images/proyectonuevo.PNG)|
+
 Esto nos abrirá una pestaña como la de abajo donde podemos escoger el tipo de proyecto entre un catálogo extenso:
+
+|![Alt](webroot/images/proyectonuevo1.PNG)|
 
 Escogemos el proyecto PHP y se nos abre la ventana de configuración de conexión donde pondremos la url completa de nuestro proyecto y 
 donde se guardará. Antes de continuar deberemos de darle a Manage y establecer la conexión
+
+|![Alt](webroot/images/proyectonuevo2.PNG)|
 
 **Pestaña de conexión**
 En esta pestaña indicaremos la ip de nuestro servidor Ubuntu, el usuario con el que iniciaremos la conexión y su contraseña que en este caso
 es el usuario operadorweb e indicaremos la ruta donde se encuentra el proyecto en cuestion teniendo en cuenta que los proyectos se alojan en
 /var/www/html...
+
+|![Alt](webroot/images/proyectoconexion.PNG)|
+
 Para terminar pulsaremos el botón de Test Connection para probar si la conexión se realiza correctamente y cerraremos la pestaña.
+
+|![Alt](webroot/images/proyectoconexion.PNG)|
 
 Al terminar de configurar la conexión y en caso de haber salido bien, nos saldrá un cuadro donde nos muestra la carpeta del proyecto previamente
 creada en el servidor y dentro un archivo cualquiera también creado con anterioridad. Esto es muy importante ya que, en caso de no existir la carpeta
 o de estar vacía, la conexión nos lleva a errores como creación de archivos basura o creación de directorios donde no deberían de crearse.
+
+|![Alt](webroot/images/proyectonuevo3.PNG)|
+|![Alt](webroot/images/proyectonuevo4.PNG)|
 
 **Pestaña de sincronización**
 Al finalizar podremos gestionar nuestra conexión pulsando click derecho en la carpeta sources y dandole a syncronize. Importante tener cuidado ya que 
 la pestaña de sincronización nos permite borrar, descargar y subir archivos y NetBeans establece bajo su criterio que elementos borrar, cuales subir y cuales 
 descargar y suele confundirse. Tener máximo cuidado y, en caso de duda, poner a todos los archivos la opción suspense la cual ignora el archivo.
 
+|![Alt](webroot/images/proyectosincro.PNG)|
+
 #### Versionamiento de un proyecto
 Una vez creado el proyecto, lo siguiente es versionar y hacer el primer commit. Para ello haremos click derecho encima del proyecto y pulsaremos 
 Versioning>Initialize Repository. Automaticamente se nos pondrán en verde todos los archivos y tendremos que hacer un commit.
 
+|![Alt](webroot/images/git.PNG)|
+
+|![Alt](webroot/images/menugit.PNG)|
+
 Por defecto la rama creada es la master y con ella haremos el commit pulsando botón derecho sobre el proyecto Git>Commit y nos saldrá la siguiente ventana:
 
+|![Alt](webroot/images/menugit.PNG)|
+|![Alt](webroot/images/gitcommit.PNG)|
+
 El mensaje recomendado para el primer commit es: Commit inicial o Initial commit. 
+
+|![Alt](webroot/images/gitcommit.PNG)|
 
 Con esto podemos dar por terminado este apartado pero podemos añadir ramas cuyo uso facilita y simplifica el desarrollo.
 Tener una rama developer donde desarrolles y pruebes cosas nuevas y otra master donde subas el producto terminado hace más limpio
 el desarrollo de tu aplicación.
 Para crear una rama debemos hacer click derecho en el proyecto Git>Branch/Tag>Create Branch. Se nos abrirá una ventana
 en la cual escribiremos el nombre que queremos para la rama y aceptaremos.
-Una vez creada debemos de introducir en ella el contenido de master, es decir, hacer un "Merge"
-Git>Merge Revision y en la pestaña que se nos abre debemos de seleccionar la rama master y aceptar. Ahora ya tenemos ambas ramas en el mismo punto.
 
+|![Alt](webroot/images/gitbranch.PNG)|
+|![Alt](webroot/images/gitdeveloper.PNG)|
 
 # 2. GitHub
 Una vez versionado el proyecto y configurado de la forma correcta para su desarrollo, podemos dar un paso más y llevar nuestro repositorio a GitHub.
@@ -601,6 +641,40 @@ Desde la pagina de inicio de GitHub pulsamos el circulo con nuestra foto de perf
 Una vez dentro vamos al apartado 'Developer settings' situado al final de la lista lateral.
 Una vez dentro vamos a 'Personal access tokens'>'Tokens (classic)'
 
+|![Alt](webroot/images/githubtoken.PNG)|
+
+Es importante guardar el código en un lugar seguro ya que una vez creado no se podrá ver.
+
+**Conexión de un repositorio desde NetBeans**
+Haciendo click derecho en el proyecto nos dirigimos a 'Git'>'Remote'>'Push'
+
+|![Alt](webroot/images/githubpush.PNG)|
+
+Dentro de la pestaña indicamos la url del repositorio en GitHub y la contraseña del token
+
+|![Alt](webroot/images/githubenlace.PNG)|
+|![Alt](webroot/images/gitpestanapush.PNG)|
+
+Indicamos las ramas que queremos publicar y aceptamos.
+
+## Clonar un repositorio
+No es muy diferente a publicar uno. Estando fuera de cualquier proyecto pulsamos la pestaña team en NetBeans y vamos a 'Team'>'Git'>'Clone'
+
+|![Alt](webroot/images/gitclone.PNG)|
+
+Se nos abrirá la siguiente pestaña en la que escribiremos el enlace del respositorio en GitHub que queremos clonar en local y la contraseña del token.
+
+|![Alt](webroot/images/gitclonerepo.PNG)|
+
+En el siguiente paso deberemos escoger las ramas que queremos clonar del repositorio de GitHub. En este caso, voy a clonar las dos que hay.
+
+|![Alt](webroot/images/gitclonebranch.PNG)|
+
+Por último indicamos donde queremos guardar el proyecto en local que será donde tenemos todos los proyectos del ciclo formativo.
+
+|![Alt](webroot/images/gitclonedesti.PNG)|
+
+Con esto ya podemos empezar a desarrollar en local, publicar los cambios en GitHub y llevarte el trabajo a donde quieras.
 # 3.Entorno de Explotación
 
 ---
