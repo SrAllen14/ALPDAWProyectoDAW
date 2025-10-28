@@ -115,6 +115,16 @@ sudo apt upgrade
 
 [Establecer fecha, hora y zona horaria](https://somebooks.es/establecer-la-fecha-hora-y-zona-horaria-en-la-terminal-de-ubuntu-20-04-lts/ "Cambiar fecha y hora")
 
+Para comprobar la fecha y la hora, y modificarlas, usaremos los siguientes comandos: 
+```bash
+# Comprobar la hora y fechar en formato: día YYYY-MM-DD HH:MM:SS 
+# También muestra la zona horaría en la que está trabajando el sistema.
+timedatectl
+
+# Para modificar la zona horaria debemos usar el siguiente comando:
+sudo timedatectl set-timezone Europe/Madrid         # En caso de querer poner la zona horaria de Madrid UTG+1.
+```
+
 #### **Cuentas administradoras**
 
 > - [X] root(inicio)
@@ -172,14 +182,14 @@ sudo systemctl {opcion} apache2
 
 ```
 #### Virtual Hosts
-#### Permisos y usuarios
-Al crear la máquina virtual creamos al usuario miadmin con contraseña paso y con privilegios de sudo. Una vez configurada la red y verificado el servicio, creamos el usuario admin2:
+##### Permisos y usuarios
+Al crear la máquina virtual creamos al usuario miadmin con contraseña paso y con privilegios de sudo. Una vez configurada la red y verificado el servicio, creamos el usuario miadmin2:
 
 ```bash
 sudo adduser miadmin2                   #Creamos el usuario con contraseña paso e ignoramos el resto de datos que nos piden
 ```
 
-Una vez creado el usuario tenemos que darle privilegios de sudo, es decir, meterle en el grupo sudoers para que pueda hacer ciertos comandos.
+Una vez creado el usuario tenemos que darle privilegios de sudo, es decir, meterle en el grupo sudoers para que pueda hacer ciertos comandos:
 
 ```bash
 sudo usermod -aG sudo miadmin2          
@@ -190,7 +200,7 @@ sudo usermod -aG sudo miadmin2
 **Comandos recomendados**
 sudo deluser "nombreusuario"            # Borra el usuario indicado.
 su nombreusuario                        # Inicia sesión en el usuario indicado.
-exit                                    # Para salir de la sesión actual.
+exit                                    # Cierra la sesión actual.
 ```
 
 
@@ -213,8 +223,10 @@ drwxr-xr-x 3 root        root      4096 oct  9 10:30 ..
 
 ```
 
-##### Protocolo HTTPS
-###### Instalación
+#### Protocolo HTTPS
+Es la versión segura del protocolo HTTP, el cual cifra la comunicación entre el navegador y el servidor, 
+garantizando confidencialidad, integridad y autenticación de los datos.
+##### Instalación
 Generar clave privada SSL
 ```bash
 # Generamos la solicitud de certificado.
@@ -346,19 +358,105 @@ que dichos valores han cambiado y son los introducidos en el archivo de configur
 > **Consejo:**
 >
 > En el info.php hay un apartado llamado "Loaded configuration File" que indica la ruta donde
-se encuentra el archivo que acabamos de modificar.
+> se encuentra el archivo que acabamos de modificar.
 
 ### 1.1.4 MySQL
+El gestor de base de datos que hemos escogido, compatible con PHP, es MariaDB.
+A continuación detallaremos el proceso de instalación y puesta en marcha de este servicio.
+
+#### Instalación
+
+```bash
+# Actualizamos el OS
+sudo apt update
+
+# Instalamos MariaDB
+sudo apt install mariadb-server -y
+
+# Una vez instalado comprobamos la version de MariaDB instalada.
+mariadb --version
+
+mariadb Ver 15.1 Distrib 10.11.13
+```
+#### Configuración
+Una vez instalado el servicio de MariaDB nos vamos a la configuración de esta misma.
+
+```bash
+# Nos dirigimos a este archivo y lo modificamos /etc/mysql/mariadb.conf.d/50-server.cnf
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+
+# Modificamos bind-address = 127.0.0.1 por: 0.0.0.0 y guardamos
+# Reiniciamos el servicio
+sudo systemctl restart mariadb
+
+# Aunque no nos de error al reiniciar debemos hacer una comprobación para estar seguros de que el proceso está en ejecución.
+sudo ss -punta | grep mariadb
+
+# Nos debe salir una linea así: tcp LISTEN 0 80 0.0.0.0:3306 0.0.0.0:* users:(("mariadb",pid=7865,fd=22))
+```
+
+Con esto ya tenemos un servidor sql trabajando correctamente en nuestra máquina ubuntu server.
+Para iniciar el servicio en modo comando, nos iniciará sin autenticar ningún usuario. 
+
+
+
+#### Usuarios
+
+**Usuarios requeridos**
+Superusuarios: root y adminsql con los cuales crearemos, modificaremos y eliminaremos tanto bases de datos como usuarios.
+Usuario base: uno por cada base de datos el cual va a realizar las consultas necesarias a la base y enviarselas al PHP. Este usuario no tendrá ciertos privilegios por seguridad.
+**-------------------**
+
+Otro paso importante es realizar la prueba de instalación segura de mariadb
+```bash
+sudo mysql_secure_installation
+```
+Y realizamos los pasos siguientes de la siguiente manera:
+
+
+#### Módulos
+**Instalación de módulos**
+Todo esto se puede realizar previo a instalar el mysql ya que esto es una configuración de PHP.
+Modelo php8.3-mysql es la extensión que permite a PHP conectarse con el servidor de bases de datos.
+```bash
+sudo apt install php8.3-mysql
+sudo apt install php8.3-intl           # Extensión de internalización básica para SQL.
+```
+Ahora se listan los módulos mediante el siguiente comando (este paso se debe realizar previo a la instalación y después):
+```bash
+sudo php -m | grep mysql
+# Si se realiza antes de instalar los módulos debería de aparecer vacio.
+# En caso de hacerlo después apareceran varios módulos: mysqli, mysqlnd, pdo_mysql.
+``` 
+**----------------------**
+
+#### Conexión con NetBeans
+Para conectar el NetBeans a la base de datos debemos de descargar el driver necesario:
+mariadb-java-cliente-3.5.6.
+
+Una vez descargado y guardado en una carpeta llamada lib entraremos en NetBeans e iremos al apartado 'Services'>'Databases'
+Haremos click derecho donde pone 'MariaDB(MySQL-compatible)' y se nos abrirá una pestaña de conexión.
+En esta pestaña añadiremos el driver descargado y continuaremos a efectuar la conexión.
+En cada apartado pondremos lo siguiente:
+**Host:** 10.199.11.90 (ip de la máquina)
+**Port:** 3306
+**Database:** se puede dejar vacio o introducir uno cual sea.
+**User Name:** adminsql
+**Password:** paso
+
+Antes de continuar con la conexión podemos testearla para confirmar que funciona.
+Por último decidimos el nombre de la conexión para facilitarnos su uso y aceptamos.
+Ya podemos realizar todas las operaciones que el usuario introducido puede hacer con los permisos que tenga.
 ### 1.1.5 XDebug
 ##### ⚙️ Instalación y configuración
 
-##### Verifica si Xdebug está instalado
+**Verifica si Xdebug está instalado**
 
 ```bash
 sudo php -v | grep xdebug
 ```
 
-##### Si no aparece, instalálo:
+**Si no aparece, instalálo:**
 ```bash
 sudo apt install php8.3-xdebug
 ```
@@ -486,6 +584,22 @@ Git>Merge Revision y en la pestaña que se nos abre debemos de seleccionar la ra
 
 
 # 2. GitHub
+Una vez versionado el proyecto y configurado de la forma correcta para su desarrollo, podemos dar un paso más y llevar nuestro repositorio a GitHub.
+GitHub es una red social donde usuarios de todo el mundo publican sus proyectos de manera pública o privada. Así cualquier usuario puede ver el código, preguntar
+hacer propuestas de cambios y mejoras, descargar el proyecto y probarlo en casa, incluso se puede clonar el repositorio para tenerlo en otro dispositivo. 
+Esta última cualidad es de la que va a tratar este apartado.
+
+## Publicación de un repositorio local
+Para realizar este paso debemos de tener ciertos pasos previos:
+> Crear una cuenta de GitHub
+> Crear un repositorio (público o privado)
+> Crear un token clásico para realizar las subidas y bajadas de contenido a parte de para realizar la clonación.
+
+**Creación de token**
+Como este paso es más complejo que la creación de la cuenta de GitHub y el repositorio, vamos a explicarlo detalladamente.
+Desde la pagina de inicio de GitHub pulsamos el circulo con nuestra foto de perfil situado en la esquina derecha superior de la pestaña y entramos en 'Settings'
+Una vez dentro vamos al apartado 'Developer settings' situado al final de la lista lateral.
+Una vez dentro vamos a 'Personal access tokens'>'Tokens (classic)'
 
 # 3.Entorno de Explotación
 
