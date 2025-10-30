@@ -10,8 +10,8 @@
         - [**Actualizar el sistema**](#actualizar-el-sistema)
         - [**Configuración fecha y hora**](#configuración-fecha-y-hora)
         - [**Cuentas administradoras**](#cuentas-administradoras)
-        - [**Habilitar cortafuegos**](#habilitar-cortafuegos)
-      - [1.1.2 Instalación del servidor web](#112-instalación-del-servidor-web)
+        - [**Gestion UFW**](#Gestión-UFW)
+      - [1.1.2 Apache HTTP](#112-Apache-HTTP)
         - [Instalación](#instalación)
         - [Verficación del servicio](#verficación-del-servicio)
         - [Virtual Hosts](#virtual-hosts)
@@ -19,7 +19,7 @@
         - [Conexión segura (HTTPS)](#protocolo-https)
       - [1.1.3 PHP](#113-php)
         - [Instalación de PHP en el servidor apache](#instalación-de-php-en-el-servidor-apache)
-      - [1.1.4 MySQL](#114-mysql)
+      - [1.1.4 MariaDB](#114-mariadb)
       - [1.1.5 XDebug](#115-xdebug)
       - [1.1.6 DNS](#116-dns)
       - [1.1.7 SFTP](#117-sftp)
@@ -133,7 +133,7 @@ sudo timedatectl set-timezone Europe/Madrid         # En caso de querer poner la
 > - [X] miadmin/paso
 > - [X] miadmin2/paso
 
-#### **Habilitar cortafuegos**
+#### **Gestión UFW**
 Para comprobar el estado del cortafuegos y saber si está activado o desactivado, debemos usar el siguiente comando:
 
 ```bash
@@ -154,7 +154,7 @@ sudo ufw status numbered
 sudo ufw delete "numeropuerto"
 ```
 
-### 1.1.2 Instalación del servidor web
+### 1.1.2 Apache HTTP
 
 #### Instalación
 
@@ -362,7 +362,7 @@ que dichos valores han cambiado y son los introducidos en el archivo de configur
 > En el info.php hay un apartado llamado "Loaded configuration File" que indica la ruta donde
 > se encuentra el archivo que acabamos de modificar.
 
-### 1.1.4 MySQL
+### 1.1.4 MariaDB
 El gestor de base de datos que hemos escogido, compatible con PHP, es MariaDB.
 A continuación detallaremos el proceso de instalación y puesta en marcha de este servicio.
 
