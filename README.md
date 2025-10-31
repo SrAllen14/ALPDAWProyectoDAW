@@ -10,6 +10,7 @@
         - [**Actualizar el sistema**](#actualizar-el-sistema)
         - [**Configuración fecha y hora**](#configuración-fecha-y-hora)
         - [**Cuentas administradoras**](#cuentas-administradoras)
+        - [**Gestión SSH**](#gestion-ssh)
         - [**Gestion UFW**](#Gestión-UFW)
       - [1.1.2 Apache HTTP](#112-Apache-HTTP)
         - [Instalación](#instalación)
@@ -25,7 +26,7 @@
       - [1.1.7 SFTP](#117-sftp)
       - [1.1.8 Apache Tomcat](#118-apache-tomcat)
       - [1.1.9 LDAP](#119-ldap)
-    - [1.2 Windows 11](#12-windows-11)
+    - [1.2 Windows 10](#12-windows-10)
       - [1.2.1 **Configuración inicial**](#121-configuración-inicial)
         - [**Nombre y configuración de red**](#nombre-y-configuración-de-red-1)
         - [**Cuentas administradoras**](#cuentas-administradoras-1)
@@ -132,6 +133,45 @@ sudo timedatectl set-timezone Europe/Madrid         # En caso de querer poner la
 > - [X] root(inicio)
 > - [X] miadmin/paso
 > - [X] miadmin2/paso
+
+#### **Gestión SSH**
+El protocolo de red SSH permite controlar y modificar servidores remotos de manera segura a través de Internet. Utiliza criptografía para
+encriptar las conexiones entre dispositivos, garantizando así la seguridad de los datos transmitidos.
+
+##### Instalación de SSH
+En el momento que estamos instalando el sistema operativo Ubuntu Server 24.04.3 LTS el instalador nos pregunta si queremos el servicio SSH.
+Por tanto tenemos dos opciones para obtener el servicio SSH en nuestra máquina:
+
+**1ª Opción:** preinstalarlo durante la instalación del sistema operativo.
+
+**2ª Opción:** usar el siguiente comando:
+```bash
+# Actualizamos el sistema operativo.
+sudo apt update
+
+# Instalamos el servicio SSH.
+sudo apt install openssh-server -y
+```
+
+En cualquiera de los dos casos debemos de comprobar que se ha instalado el servicio correctamente:
+```bash
+sudo systemctl status ssh
+
+# En caso de necesitar iniciarlo o reiniciarlo tenemos este comando
+sudo systemctl [start|restart] ssh
+
+# Para que el servicio se inicie cada vez que se encienda la máquina tenemos este comando
+sudo systemctl enable ssh
+```
+##### Conexión SSH
+Para conectarnos con la máquina con SSH deberemos abrir la consola de comandos en un dispositivo de la misma red
+y escribir el siguiente comando:
+```bash
+ssh 'usuario'@'ip'
+```
+
+Nos pedirá la contraseña del usuario y nos iniciará sesión. En ese momento podremos gestionar en remoto desde esa consola.
+Hay que tener en cuenta que los límites de que se puede hacer los marcan los privilegios que tenga el usuario conectado.
 
 #### **Gestión UFW**
 Para comprobar el estado del cortafuegos y saber si está activado o desactivado, debemos usar el siguiente comando:
@@ -494,7 +534,7 @@ sudo systemctl restart php8.3-fpm
 ### 1.1.8 Apache Tomcat
 ### 1.1.9 LDAP
 
-## 1.2 Windows 11
+## 1.2 Windows 10
 ### 1.2.1 **Configuración inicial**
 #### **Nombre y configuración de red**
 #### **Cuentas administradoras**
