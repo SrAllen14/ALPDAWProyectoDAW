@@ -11,7 +11,7 @@
         - [**Configuración fecha y hora**](#configuración-fecha-y-hora)
         - [**Cuentas administradoras**](#cuentas-administradoras)
         - [**Gestión SSH**](#gestion-ssh)
-        - [**Gestion UFW**](#Gestión-UFW)
+        - [**Gestión UFW**](#Gestión-UFW)
       - [1.1.2 Apache HTTP](#112-Apache-HTTP)
         - [Instalación](#instalación)
         - [Verficación del servicio](#verficación-del-servicio)
@@ -265,6 +265,70 @@ drwxr-xr-x 3 root        root      4096 oct  9 10:30 ..
 
 ```
 
+**Usuarios enjaulados**
+El concepto de usuario enjaulado tiene que ver con la seguridad de nuestro servidor web. Cuando "enjaulamos" a un usuario, estamos prohibiendole circular por el árbol de directorios
+de nuestro servidor, es decir, solo puede entrar, modificar, leer y borrar en cualquier fichero o directorio dentro de su directorio raíz.
+
+El primer paso es crear un grupo llamado "sftpusers" (el nombre es a gusto del desarrollador) en el cual vamos a introducir a los usuarios que queremos enjaular.
+También crearemos un usuario de prueba para comprobar que este método funciona y es seguro.
+```bash
+# Creamos el grupo.
+sudo groupadd sftpusers
+
+# Creamos el usuario con raíz /var/www/nombredeusuario y que pertenezca al grupo creado.
+sudo useradd -g www-data -G sftpusers -m -d /var/www/enjaulado1 enjaulado1
+
+# Cambiamos la contraseña del usuario creado ya que no tiene.
+sudo passwd enjaulado1
+```
+
+Ahora debemos cambiar los permisos del directorio jaula y de los directorios padres de éste.
+```bash
+# Cambiamos el dueño del directorio /var/www/enjaulado1
+sudo chown root:root /var/www/enjaulado1
+
+# Quitamos el permiso de escritura del directorio /var/www/enjaulado1
+sudo chmod 555 /var/www/enjaulado1
+```
+
+Para terminar, debemos crear la carpeta donde vamos a subir nuestros proyectos y aplicaciones:
+```bash
+# Creamos la carpeta httpdocs.
+sudo mkdir /var/www/enjaulado1/httpdocs
+
+# Le damos permisos de lectura y escritura a todos y de ejeución a root.
+sudo chmod 2775 -R /var/www/enjaulado1/httpdocs
+
+# Cambiamos el propietario del directorio /var/www/enjaulado1/httpdocs para que sea el usuario enjaulado1.
+sudo chown enjaulado1:www-data -R /var/www/enjaulado1/httpdocs
+```
+
+Por último editamos el archivo de configuración /etc/ssh/sshd_config:
+```bash
+# Realizamos una copia del archivo de configuración por si surgen problemas.
+sudo cp sshd_config sshd_config.bk
+
+# Introducimos las siguientes lineas.
+sudo nano sshd_config
+
+# Buscamos la siguiente línea, la comentamos y a continuación copiamos estas líneas.
+
+# Subsystem sftp /usr/lib/openssh/sftp-server
+Subsystem sftp internal-sftp
+
+Match Group sftpusers
+ChrootDirectory %h
+ForceCommand internal-sftp -u 2
+AllosTcpForwarding yes
+PermitTunnel no
+X11Forwarding no
+
+# Guardamos el archivo y reiniciamos el servicio ssh
+sudo systemctl restart ssh
+```
+
+Para comprobar nos iremos al MobaXterm y comprobaremos que, con el usuario enjaulado1 se inicia en el directorio /var/www/enjaulado1 y que no puede acceder al directorio padre.
+También podemos comprobar que en la carpeta /var/www/enjaulado1/httpdocs se pueden crear y eliminar archivos.
 #### Protocolo HTTPS
 Es la versión segura del protocolo HTTP, el cual cifra la comunicación entre el navegador y el servidor, 
 garantizando confidencialidad, integridad y autenticación de los datos.
