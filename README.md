@@ -10,8 +10,9 @@
         - [**Actualizar el sistema**](#actualizar-el-sistema)
         - [**Configuración fecha y hora**](#configuración-fecha-y-hora)
         - [**Cuentas administradoras**](#cuentas-administradoras)
-        - [**Habilitar cortafuegos**](#habilitar-cortafuegos)
-      - [1.1.2 Instalación del servidor web](#112-instalación-del-servidor-web)
+        - [**Gestión SSH**](#gestion-ssh)
+        - [**Gestión UFW**](#Gestión-UFW)
+      - [1.1.2 Apache HTTP](#112-Apache-HTTP)
         - [Instalación](#instalación)
         - [Verficación del servicio](#verficación-del-servicio)
         - [Virtual Hosts](#virtual-hosts)
@@ -19,13 +20,13 @@
         - [Conexión segura (HTTPS)](#protocolo-https)
       - [1.1.3 PHP](#113-php)
         - [Instalación de PHP en el servidor apache](#instalación-de-php-en-el-servidor-apache)
-        - [1.1.4 MySQL](#114-mysql)
-        - [1.1.5 XDebug](#115-xdebug)
-        - [1.1.6 DNS](#116-dns)
-        - [1.1.7 SFTP](#117-sftp)
-        - [1.1.8 Apache Tomcat](#118-apache-tomcat)
-        - [1.1.9 LDAP](#119-ldap)
-    - [1.2 Windows 11](#12-windows-11)
+      - [1.1.4 MariaDB](#114-mariadb)
+      - [1.1.5 XDebug](#115-xdebug)
+      - [1.1.6 DNS](#116-dns)
+      - [1.1.7 SFTP](#117-sftp)
+      - [1.1.8 Apache Tomcat](#118-apache-tomcat)
+      - [1.1.9 LDAP](#119-ldap)
+    - [1.2 Windows 10](#12-windows-10)
       - [1.2.1 **Configuración inicial**](#121-configuración-inicial)
         - [**Nombre y configuración de red**](#nombre-y-configuración-de-red-1)
         - [**Cuentas administradoras**](#cuentas-administradoras-1)
@@ -133,7 +134,46 @@ sudo timedatectl set-timezone Europe/Madrid         # En caso de querer poner la
 > - [X] miadmin/paso
 > - [X] miadmin2/paso
 
-#### **Habilitar cortafuegos**
+#### **Gestión SSH**
+El protocolo de red SSH permite controlar y modificar servidores remotos de manera segura a través de Internet. Utiliza criptografía para
+encriptar las conexiones entre dispositivos, garantizando así la seguridad de los datos transmitidos.
+
+##### Instalación de SSH
+En el momento que estamos instalando el sistema operativo Ubuntu Server 24.04.3 LTS el instalador nos pregunta si queremos el servicio SSH.
+Por tanto tenemos dos opciones para obtener el servicio SSH en nuestra máquina:
+
+**1ª Opción:** preinstalarlo durante la instalación del sistema operativo.
+
+**2ª Opción:** usar el siguiente comando:
+```bash
+# Actualizamos el sistema operativo.
+sudo apt update
+
+# Instalamos el servicio SSH.
+sudo apt install openssh-server -y
+```
+
+En cualquiera de los dos casos debemos de comprobar que se ha instalado el servicio correctamente:
+```bash
+sudo systemctl status ssh
+
+# En caso de necesitar iniciarlo o reiniciarlo tenemos este comando
+sudo systemctl [start|restart] ssh
+
+# Para que el servicio se inicie cada vez que se encienda la máquina tenemos este comando
+sudo systemctl enable ssh
+```
+##### Conexión SSH
+Para conectarnos con la máquina con SSH deberemos abrir la consola de comandos en un dispositivo de la misma red
+y escribir el siguiente comando:
+```bash
+ssh 'usuario'@'ip'
+```
+
+Nos pedirá la contraseña del usuario y nos iniciará sesión. En ese momento podremos gestionar en remoto desde esa consola.
+Hay que tener en cuenta que los límites de que se puede hacer los marcan los privilegios que tenga el usuario conectado.
+
+#### **Gestión UFW**
 Para comprobar el estado del cortafuegos y saber si está activado o desactivado, debemos usar el siguiente comando:
 
 ```bash
@@ -154,7 +194,7 @@ sudo ufw status numbered
 sudo ufw delete "numeropuerto"
 ```
 
-### 1.1.2 Instalación del servidor web
+### 1.1.2 Apache HTTP
 
 #### Instalación
 
@@ -225,6 +265,70 @@ drwxr-xr-x 3 root        root      4096 oct  9 10:30 ..
 
 ```
 
+**Usuarios enjaulados**
+El concepto de usuario enjaulado tiene que ver con la seguridad de nuestro servidor web. Cuando "enjaulamos" a un usuario, estamos prohibiendole circular por el árbol de directorios
+de nuestro servidor, es decir, solo puede entrar, modificar, leer y borrar en cualquier fichero o directorio dentro de su directorio raíz.
+
+El primer paso es crear un grupo llamado "sftpusers" (el nombre es a gusto del desarrollador) en el cual vamos a introducir a los usuarios que queremos enjaular.
+También crearemos un usuario de prueba para comprobar que este método funciona y es seguro.
+```bash
+# Creamos el grupo.
+sudo groupadd sftpusers
+
+# Creamos el usuario con raíz /var/www/nombredeusuario y que pertenezca al grupo creado.
+sudo useradd -g www-data -G sftpusers -m -d /var/www/enjaulado1 enjaulado1
+
+# Cambiamos la contraseña del usuario creado ya que no tiene.
+sudo passwd enjaulado1
+```
+
+Ahora debemos cambiar los permisos del directorio jaula y de los directorios padres de éste.
+```bash
+# Cambiamos el dueño del directorio /var/www/enjaulado1
+sudo chown root:root /var/www/enjaulado1
+
+# Quitamos el permiso de escritura del directorio /var/www/enjaulado1
+sudo chmod 555 /var/www/enjaulado1
+```
+
+Para terminar, debemos crear la carpeta donde vamos a subir nuestros proyectos y aplicaciones:
+```bash
+# Creamos la carpeta httpdocs.
+sudo mkdir /var/www/enjaulado1/httpdocs
+
+# Le damos permisos de lectura y escritura a todos y de ejeución a root.
+sudo chmod 2775 -R /var/www/enjaulado1/httpdocs
+
+# Cambiamos el propietario del directorio /var/www/enjaulado1/httpdocs para que sea el usuario enjaulado1.
+sudo chown enjaulado1:www-data -R /var/www/enjaulado1/httpdocs
+```
+
+Por último editamos el archivo de configuración /etc/ssh/sshd_config:
+```bash
+# Realizamos una copia del archivo de configuración por si surgen problemas.
+sudo cp sshd_config sshd_config.bk
+
+# Introducimos las siguientes lineas.
+sudo nano sshd_config
+
+# Buscamos la siguiente línea, la comentamos y a continuación copiamos estas líneas.
+
+# Subsystem sftp /usr/lib/openssh/sftp-server
+Subsystem sftp internal-sftp
+
+Match Group sftpusers
+ChrootDirectory %h
+ForceCommand internal-sftp -u 2
+AllosTcpForwarding yes
+PermitTunnel no
+X11Forwarding no
+
+# Guardamos el archivo y reiniciamos el servicio ssh
+sudo systemctl restart ssh
+```
+
+Para comprobar nos iremos al MobaXterm y comprobaremos que, con el usuario enjaulado1 se inicia en el directorio /var/www/enjaulado1 y que no puede acceder al directorio padre.
+También podemos comprobar que en la carpeta /var/www/enjaulado1/httpdocs se pueden crear y eliminar archivos.
 #### Protocolo HTTPS
 Es la versión segura del protocolo HTTP, el cual cifra la comunicación entre el navegador y el servidor, 
 garantizando confidencialidad, integridad y autenticación de los datos.
@@ -362,7 +466,7 @@ que dichos valores han cambiado y son los introducidos en el archivo de configur
 > En el info.php hay un apartado llamado "Loaded configuration File" que indica la ruta donde
 > se encuentra el archivo que acabamos de modificar.
 
-### 1.1.4 MySQL
+### 1.1.4 MariaDB
 El gestor de base de datos que hemos escogido, compatible con PHP, es MariaDB.
 A continuación detallaremos el proceso de instalación y puesta en marcha de este servicio.
 
@@ -494,7 +598,7 @@ sudo systemctl restart php8.3-fpm
 ### 1.1.8 Apache Tomcat
 ### 1.1.9 LDAP
 
-## 1.2 Windows 11
+## 1.2 Windows 10
 ### 1.2.1 **Configuración inicial**
 #### **Nombre y configuración de red**
 #### **Cuentas administradoras**
