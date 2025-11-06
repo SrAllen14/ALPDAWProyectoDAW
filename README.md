@@ -319,7 +319,7 @@ Subsystem sftp internal-sftp
 Match Group sftpusers
 ChrootDirectory %h
 ForceCommand internal-sftp -u 2
-AllosTcpForwarding yes
+AllowTcpForwarding yes
 PermitTunnel no
 X11Forwarding no
 
@@ -390,6 +390,10 @@ sudo systectl status apache2
 
 # A continuación instalamos PHP y PHP8.3-FPM con la versión 8.3
 sudo apt install php8.3-fpm php8.3
+
+# Y por último instalamos el módulo de libapache2-mod-php8.3 y lo habilitamos.
+sudo apt install libapache2-mod-php8.3 -y
+sudo a2enmod php8.3
 ```
 
 Para terminar reiniciaremos Apache y comprobaremos que todo ha salido bien:
@@ -411,7 +415,7 @@ http://direccionip/info.php. Nos debería de salir una página como esta.
 
 **/etc/php/8.3/fpm/conf.d**: Módulos instalados en esta configuración de php (enlaces simbólicos a /etc/php/8.3/mods-available)
 **/etc/php/8.3/fpm/php-fpm.conf** : Configuración general de php-fpm
-**/etc/php/8.3/fpm/php.ini** : Configuraicón de php para este escenario
+**/etc/php/8.3/fpm/php.ini** : Configuración de php para este escenario
 **/etc/php/8.3/fpm/pool.d** : Directorio con distintos pool de configuración. Cada aplicación puede tener una configuración distinta (procesos distintos) de php-fpm.
   
 Por defecto tenemos un pool cuya configuración la encontramos en **/etc/php/8.3/fpm/pool.d/ www.conf**, en este fichero podemos configurar parámetros, los más importantes son:
