@@ -2,7 +2,7 @@
 
 
   - [1. Servidor de desarrollo](ServidorDeDesarrollo.md)
-  - [2. Cliente de explotacion](ClienteDeExplotacion.md)
+  - [2. Cliente de explotacion](ClienteDeDesarrollo.md)
   - [3. GitHub](GitHub.md)
 
 
