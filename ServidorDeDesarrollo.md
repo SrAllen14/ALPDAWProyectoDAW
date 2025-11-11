@@ -1,3 +1,5 @@
+[Volver](README.md)
+
 - [1. Servidor de Desarrollo](#1-servidor-de-desarrollo)
     - [1.1 Ubuntu Server 24.04.3 LTS](#11-ubuntu-server-24043-lts)
         - [Configuración](#configuración)
@@ -246,7 +248,7 @@ drwxr-xr-x 3 root        root      4096 oct  9 10:30 ..
 
 ```
 
-**Usuarios enjaulados**
+**Usuarios enjaulados**\
 El concepto de usuario enjaulado tiene que ver con la seguridad de nuestro servidor web. Cuando "enjaulamos" a un usuario, estamos prohibiendole circular por el árbol de directorios
 de nuestro servidor, es decir, solo puede entrar, modificar, leer y borrar en cualquier fichero o directorio dentro de su directorio raíz.
 
@@ -456,8 +458,7 @@ que dichos valores han cambiado y son los introducidos en el archivo de configur
 El gestor de base de datos que hemos escogido, compatible con PHP, es MariaDB.
 A continuación detallaremos el proceso de instalación y puesta en marcha de este servicio.
 
-**Instalación**
-
+**Instalación**\
 ```bash
 # Actualizamos el OS
 sudo apt update
@@ -470,7 +471,8 @@ mariadb --version
 
 mariadb Ver 15.1 Distrib 10.11.13
 ```
-**Configuración**
+
+**Configuración**\
 Una vez instalado el servicio de MariaDB nos vamos a la configuración de esta misma.
 
 ```bash
@@ -490,7 +492,7 @@ sudo ss -punta | grep mariadb
 Con esto ya tenemos un servidor sql trabajando correctamente en nuestra máquina ubuntu server.
 Para iniciar el servicio en modo comando, nos iniciará sin autenticar ningún usuario. 
 
-**Usuarios requeridos**
+**Usuarios requeridos**\
 Superusuarios: root y adminsql con los cuales crearemos, modificaremos y eliminaremos tanto bases de datos como usuarios.
 Usuario base: uno por cada base de datos el cual va a realizar las consultas necesarias a la base y enviarselas al PHP. Este usuario no tendrá ciertos privilegios por seguridad.
 **-------------------**
@@ -501,7 +503,7 @@ sudo mysql_secure_installation
 ```
 Y realizamos los pasos siguientes de la siguiente manera:
 
-**Instalación de módulos**
+**Instalación de módulos**\
 Todo esto se puede realizar previo a instalar el mysql ya que esto es una configuración de PHP.
 Modelo php8.3-mysql es la extensión que permite a PHP conectarse con el servidor de bases de datos.
 ```bash
@@ -516,7 +518,7 @@ sudo php -m | grep mysql
 ``` 
 **----------------------**
 
-**Conexión con NetBeans**
+**Conexión con NetBeans**\
 Para conectar el NetBeans a la base de datos debemos de descargar el driver necesario:
 mariadb-java-cliente-3.5.6.
 
