@@ -1,10 +1,10 @@
 [Volver](README.md)
 
 - [1. GitHub](#1-github)
-  - [1.1 Publicación de un repositorio local](#1.1-publicación-de-un-repositorio-local)
-  - [1.2 Clonar un repositorio](#1.2-clonar-un-repositorio)
+  - [1.1 Publicación de un repositorio local](#11-publicación-de-un-repositorio-local)
+  - [1.2 Clonar un repositorio](#12-clonar-un-repositorio)
 
-## 2. GitHub
+## 1. GitHub
 Una vez versionado el proyecto y configurado de la forma correcta para su desarrollo, podemos dar un paso más y llevar nuestro repositorio a GitHub.
 GitHub es una red social donde usuarios de todo el mundo publican sus proyectos de manera pública o privada. Así cualquier usuario puede ver el código, preguntar
 hacer propuestas de cambios y mejoras, descargar el proyecto y probarlo en casa, incluso se puede clonar el repositorio para tenerlo en otro dispositivo. 
