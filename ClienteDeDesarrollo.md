@@ -8,13 +8,22 @@
         - [Versonamiento de un proyecto](#versionamiento-de-un-proyecto)
 
 ## 1. Cliente de desarrollo
+Un cliente de desarrollo es un programa o entorno utilizado por los desarrolladores para crear, probar
+y depurar aplicaciones o sistemas. Este tipo de cliente permite conectar con servidores o plataformas de
+desarrollo para gestionar código, bases de datos y servicios,. Facilita la creación de software al ofrecer 
+herramientas integradas como editores, compiladores y control de versiones. Su objetivo es optimizar el
+proceso de programación y garantizar la calidad del producto final.
+
+En nuestro caso, nuestro cliente de desarrollo es un ordenador con Windows 10 como sistema operativo,
+Microsoft Edge como navegador principal, Apache NetBeans como IDE, MobaXterm para conectarse mediante SSH
+y SFTP al servidor y Git como repositorio de versiones.
 ### 1.1 Navegadores
 Aquí se especifican los navegadores que solemos utilizar para la interpretación y visualización de
 nuestras aplicaciones web. También se indican las extensiones instaladas en cada uno.
 
 > **Navegadores y extensiones**\
-> Edge: Color Picker - Native Eyedropper\
-> Chrome: ColorZilla
+> **Edge:** Color Picker - Native Eyedropper\
+> **Chrome:** ColorZilla
 
 ### 1.2 MobaXterm
 Esta aplicación permite conectarse a un servidor mediante un amplio abanico de protocolos.
@@ -28,7 +37,7 @@ iniciamos la aplicación.
 Para conectar un dispositivo por SSH debemos realizar los siguientes pasos:
 > Pulsamos el botón Session con una pantalla como símbolo.
 
-|![Alt](webroot/images/mobasession.PNG)|
+|![Alt](webroot/images/mobasesion.PNG)|
 
 > Seleccionamos SSH como protocolo de conexión.
 
