@@ -9,6 +9,7 @@
         - [Instalación](#instalación)
         - [Cuentas](#cuentas)
         - [Conexión segura (HTTPS)](#protocolo-https)
+        - [Redirección a HTTPS](#redireccion-a-https)
     - [1.3 PHP](#13-php)
         - [Instalación](#instalacion)
         - [Configuración del interprete de PHP](#configuracion-del-interprete-de-php)
@@ -312,10 +313,11 @@ sudo systemctl restart ssh
 
 Para comprobar nos iremos al MobaXterm y comprobaremos que, con el usuario enjaulado1 se inicia en el directorio /var/www/enjaulado1 y que no puede acceder al directorio padre.
 También podemos comprobar que en la carpeta /var/www/enjaulado1/httpdocs se pueden crear y eliminar archivos.
-### Protocolo HTTPS
+#### Protocolo HTTPS
 Es la versión segura del protocolo HTTP, el cual cifra la comunicación entre el navegador y el servidor, 
 garantizando confidencialidad, integridad y autenticación de los datos.
-#### Instalación
+
+**Instalación**
 Generar clave privada SSL
 ```bash
 # Generamos la solicitud de certificado.
@@ -364,6 +366,21 @@ de dos formas.
 > 2. Introducir como autoridad certificadora a tu propio usuario en tu dispositivo. No supone un riesgo ya que te estás dando confianza
 > a ti mismo.
 
+
+#### Redirección a HTTPS
+Para realizar el redireccionamiento de HTTP a HTTPS necesitamos activar el módulo alias:
+```bash
+# Seguramente este activado.
+sudo a2enmod alias
+
+# Recargamos el servicio apache2.
+sudo systemctl reload apache2
+```
+
+Editamos el fichero /etc/apache2/sites-available/000-default.conf de la siguiente forma:\
+> Redirect / https://ipservidor
+
+Recargamos el servicio y comprobamos que, al entrar en el servidor web, se nos redirige a https://....
 ### 1.3 PHP
 
 #### Instalación
@@ -574,6 +591,31 @@ sudo systemctl restart apache2
 sudo systemctl restart php8.3-fpm
 ```
 ##### DNS
+Vamos a redireccionar desde plesk. 
+
+**Desde Plesk**\
+* Desde el panel de control vamos a Hosting y DNS.\
+![Alt](webroot/images/pleskpanelcontroldns.PNG)
+* Entramos en DNS.\
+![Alt](webroot/images/pleskdns.PNG)
+* Añadimos un registro.\
+![Alt](webroot/images/pleskdnsañadir.png)
+* Y rellenamos el registro con los datos correctos. En el apartado Nombre de dominio rellenamos a gusto personal.\
+![Alt](webroot/images/pleskregistro.png)
+**Desde el servidor**
+* Realizamos una copia del fichero /etc/apache2/sites-availables/000-default.conf con el nombre que queramos.\
+```bash
+sudo cp 000-defautl.conf sitio1-alvaroallper-ieslosauces-es.conf
+```
+* Modificamos el archivo de esta forma:\
+```bash
+sudo nano sitio1-alvaroallper-ieslossauces-es.conf
+```
+* Se habilita el archivo de configuración y se recarga apache.\
+```bash
+sudo a2ensite sitio1-alvaroallper-ieslossauces-es.conf
+sudo systemctl reload apache2
+```
 ##### SFTP
 ##### Apache Tomcat
 ##### LDAP
