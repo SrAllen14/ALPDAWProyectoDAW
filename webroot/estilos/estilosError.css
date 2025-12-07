@@ -1,0 +1,67 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html, body{
+    width: 100%;
+    height: 100%;    
+    overflow-x: hidden;
+}
+
+header, footer{
+    height: 10%;
+    width: 100%;
+    background-color: red;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    
+    a{
+        text-decoration: none;
+        color: white;
+    }
+}
+.cabecera1{
+    text-align: left;
+    width: 33%;
+    padding: 20px;
+}
+
+.cabecera2{
+    text-align: center;
+    width: 33%;
+}
+
+.cabecera3{
+    text-align: right;
+    width: 33%;
+    padding: 20px;
+}
+
+.pie1{
+    width: 50%;
+    height: auto;
+    text-align: left;
+    padding: 20px; 
+}
+
+main{
+    width: 100%;
+    height: 80%;
+    margin: 10px;
+}
+
+.container{
+    margin: auto;
+    border-radius: 10px;
+    background-color: beige;
+    width: 90%;
+    height: 100%;
+    text-align: center;
+    
+    h2{
+        color: lightcoral;
+    }
+}
+
