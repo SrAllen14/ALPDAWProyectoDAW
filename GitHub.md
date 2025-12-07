@@ -3,6 +3,7 @@
 - [1. GitHub](#1-github)
   - [1.1 Publicación de un repositorio local](#11-publicación-de-un-repositorio-local)
   - [1.2 Clonar un repositorio](#12-clonar-un-repositorio)
+  - [1.3 Generación de clave SSH](#13-generacion-de-clave-ssh)
 
 ## 1. GitHub
 Una vez versionado el proyecto y configurado de la forma correcta para su desarrollo, podemos dar un paso más y llevar nuestro repositorio a GitHub.
@@ -56,3 +57,30 @@ Por último indicamos donde queremos guardar el proyecto en local que será dond
 |![Alt](webroot/images/gitclonedesti.PNG)|
 
 Con esto ya podemos empezar a desarrollar en local, publicar los cambios en GitHub y llevarte el trabajo a donde quieras.
+
+### 1.3 Generación de clave SSH
+* Se abre el gitbash y se pega este texto
+```bash
+ssh-keygen -t ed25519 -C "alvaro.allper.1@educa.jcyl.es"
+```
+y se siguen las instrucciones.
+![alt text](images/sshKey4.png)  
+Se aigna una contraseña para más seguridad, que hay que recordar porque sino no se podrá utilizar la clave.
+
+* Se crean los archivos, la clave privada y la clave publica que habrá que guradar para poder utilizarlas.
+![alt text](images/sshKey5.png)  
+
+* Se entra en los Settings de GitHub.  
+![alt text](images/settingsGithub.png)  
+
+* Y se entra en SSH and GPG keys en en menu de la izquierda  
+![alt text](images/ssh.png)  
+
+* Se crea una nueva ssh key haciendo clic en new ssh Key  
+![alt text](images/newsshKey.png)  
+
+* Se  le da un nombre se elige el tipo de key y se copia la clave publica en el recuadro 
+![alt text](images/sshKey2.png)  
+
+* Y se ve la clave publica agregada. 
+![alt text](images/sshKey3.png)  
