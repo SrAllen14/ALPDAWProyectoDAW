@@ -1,0 +1,108 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body{
+    height: 100%; 
+    font-family: Arial, sans-serif;
+}
+
+body{
+    display: flex; 
+    flex-direction: column; 
+    min-height: 100vh;
+}
+
+header, footer{
+    width: 100%;
+    padding: 20px;
+    background-color: skyblue;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+header a, footer a{
+    text-decoration: none;
+    color: white;
+}
+
+.cabecera1, .cabecera2, .cabecera3{
+    width: 33%;
+    padding: 20px;
+}
+
+.cabecera1{
+    text-align: left;
+}
+
+.cabecera2{
+    text-align: center;
+}
+
+.cabecera3{
+    text-align: right;
+}
+
+.pie1, .pie2, .pie3{
+    width: 33%;
+    padding: 20px; 
+}
+
+.pie1{
+    text-align: left;
+    
+}
+
+.pie2{
+    text-align: center;
+}
+
+.pie3{
+    text-align: right;
+}
+
+main{
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container{
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+@media(max-width: 600px){
+    header, footer{
+        flex-direction: row;
+        text-align: center;
+    }
+
+    .cabecera1, .cabecera2, .cabecera3{
+        width: 100%;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .pie1, .pie2, .pie3{
+        width: 100%;
+        padding: 10px;
+        text-align: center;
+    }
+    
+    main{
+        padding: 10px;
+    }
+    
+    .container{
+        padding: 15px;
+    } 
+}
