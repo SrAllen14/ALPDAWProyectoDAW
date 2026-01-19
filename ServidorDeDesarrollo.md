@@ -20,6 +20,8 @@
             - [SFTP](#sftp)
             - [Apache Tomcat](#apache-tomcat)
             - [LDAP](#ldap)
+            - [Herramientas de Desarrollo](#herramientas-de-desarrollo)
+                - [PHPDocumentor](#phpdocumentor)
 
 
 ## 1. Servidor de Desarrollo
@@ -619,3 +621,66 @@ sudo systemctl reload apache2
 ##### SFTP
 ##### Apache Tomcat
 ##### LDAP
+##### Herramientas de Desarrollo
+###### PHPDocumentor
+* Se actualiza el servidor
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
+Antes de instalar phpDocumentor, es importante instalar las extensiones de PHP que necesita para procesar archivos
+y plantillas XML/HTML.
+* Instalar la extensión XML: necesaria para leer la configuración y plantillas de phpDocumentor.
+```bash
+sudo apt install php8.3-xml
+```
+
+* Instalar la extensión MBString: necesaria para el manejo correcto de cadenas múltiples bytes (caracteres especiales, acentos).
+```bash
+sudo apt install php8.3-mbstring
+```
+
+* Reiniciar el servicio de PHP: para que las extensinoes recién instaladas se carguen.
+```bash
+sudo service php8.3-fpm restart
+sudo service apache2 restart
+```
+
+* Descarga e instala phpDocumentor (método PHAR)
+* Descarga el archivo PHAR: utiliza wget para descargar el ejecutable a tu servidor wget https://phpdoc.org/phpDocumentor.phar
+
+* Se pasa el archivo al servidor y se le otorga los permisos de ejcución (yo lo he copiado en la carpeta de DWES)
+```bash
+sudo chmod +x phpDocumentor.phar
+```
+
+* Se mueve a una ubicación global /usr/local/bin y se renombra a phpdoc para poder ejecutarlo desde cualquier directorio
+```bash
+sudo mv phpDocumentor.phar /usr/local/bin/phpdoc
+```
+
+* Se ejecuta phpdoc
+```bash
+phpdoc
+```
+
+* Se entra en la carpeta del código fuente:
+```bash
+cd /var/www/html/ALPDWESProyectoTema3/codigoPHP
+```
+
+Para que no haya problema para que se cree la carpeta docs en la carpeta codigoPHP, hay que dar permisos.
+```bash
+sudo chown -R www-data:www-data /var/www/html/ALPDWESProyectoTema4
+sudo chmod -R /var/www/html/ALPDWESProyectoTema4
+```
+
+* Se ejecuta el phpDocumentor
+```bash
+phpdoc --directory . --target docs
+```
+
+--directory .: buscar archivos PHP en el directorio actual.
+--target doc: genera el HTML de salida en la carpeta docs.
+El proceso finalizará creando la carpeta docs en el archivo index.html, que contiene la documentación.
