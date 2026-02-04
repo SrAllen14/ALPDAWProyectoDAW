@@ -1,0 +1,68 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : 12 ene 2026, 16:48:13
+    Author     : Clase
+*/
+
+
+.cabecera1, .cabecera3{
+    font-weight: bold;
+}
+.menu{
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+.menu h2{
+    margin-bottom: 10px;
+}
+
+.menu a, .menu p{
+    display: block;
+    font-weight: bold;
+    background-color: #ECF0F1;
+    width: 100%;
+    
+    padding: 12px 15px;
+    line-height: 1.4;
+    white-space: normal;
+}
+
+.menu li{
+    margin: 10px;
+    text-align: left;
+    background: #ecf0f1;
+    border-left: 5px solid #3498db;
+    border-radius: 8px;
+    width: 90%;
+}
+
+.menu li:hover{
+    background: #d6eaf8;
+    border-left: 5px solid #251abc;
+}
+
+
+.menu a{
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-decoration: none;
+}
+
+
+ul {
+    list-style: none;
+    padding: 10px;
+}
+
+@media(max-width: 600px){
+    .menu{
+        padding: 10px;
+        font-size: 14px;
+    }
+}
